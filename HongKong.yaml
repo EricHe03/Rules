@@ -1,0 +1,181 @@
+# HongKong — Clash Verge Rev / Mihomo
+# 由 HongKong.conf 轉換；適用於 Mihomo 核心。
+# 原檔只有分流設定，沒有代理節點／訂閱憑證。
+# 使用：在現有節點訂閱上按右鍵 → 編輯擴展配置，貼上本檔內容。
+# 沒有寫入 proxies / proxy-providers，合併時會沿用訂閱節點。
+# 本檔會替換訂閱的 proxy-groups 和 rules；PROXY 收集全部節點供選擇。
+# 單獨匯入本檔亦可通過核心語法檢查，但需要另加節點才可使用代理。
+# 請在 Clash Verge 設定中使用「規則」模式、關閉 IPv6；TUN 開關由應用管理。
+# 應用已設定的 TUN 路由排除項目可能覆蓋下面的 route-exclude-address。
+# 沒有節點時 PROXY 拒絕連線；有節點時預設選取第一個節點，可手動更改。
+# DNS 備援使用 Mihomo 的 fallback 機制，與 Shadowrocket 的觸發細節有所差異。
+# Shadowrocket 專用的 MITM、URL rewrite 和 ICMP 選項沒有直接對應項目。
+
+mode: rule
+ipv6: false
+
+hosts:
+  localhost: 127.0.0.1
+
+dns:
+  enable: true
+  ipv6: false
+  enhanced-mode: redir-host
+  use-hosts: true
+  use-system-hosts: false
+  respect-rules: false
+  prefer-h3: false
+  # 加密的 IP 端點用作解析 DoH 伺服器名稱。
+  default-nameserver:
+    - https://1.1.1.1/dns-query
+    - https://8.8.8.8/dns-query
+  nameserver:
+    - https://1.1.1.1/dns-query
+    - https://dns.google/dns-query
+  nameserver-policy: {}
+  direct-nameserver: []
+  direct-nameserver-follow-policy: false
+  proxy-server-nameserver: []
+  proxy-server-nameserver-policy: {}
+  fallback:
+    - system
+  fallback-filter:
+    # 香港設定：取消預設的 CN GeoIP 判定，也接受私人 IP 回應。
+    geoip: false
+    geosite: []
+    ipcidr: []
+    domain: []
+  fallback-lazy-query: true
+
+tun:
+  # 對應原檔 tun-excluded-routes；開啟 TUN 時生效。
+  route-exclude-address:
+    - 10.0.0.0/8
+    - 100.64.0.0/10
+    - 127.0.0.0/8
+    - 169.254.0.0/16
+    - 172.16.0.0/12
+    - 192.0.0.0/24
+    - 192.0.2.0/24
+    - 192.88.99.0/24
+    - 192.168.0.0/16
+    - 198.51.100.0/24
+    - 203.0.113.0/24
+    - 224.0.0.0/4
+    - 255.255.255.255/32
+    - 239.255.255.250/32
+
+proxy-groups:
+  - name: PROXY
+    type: select
+    include-all: true
+    empty-fallback: REJECT
+
+rule-providers:
+  hongkong-openai:
+    type: http
+    behavior: classical
+    format: yaml
+    url: https://raw.githubusercontent.com/VPSDance/ai-proxy-rules/refs/heads/main/rules/clash/openai.yaml
+    path: ./rule_providers/HongKong/openai.yaml
+    interval: 86400
+    proxy: DIRECT
+  hongkong-anthropic:
+    type: http
+    behavior: classical
+    format: yaml
+    url: https://raw.githubusercontent.com/VPSDance/ai-proxy-rules/refs/heads/main/rules/clash/anthropic.yaml
+    path: ./rule_providers/HongKong/anthropic.yaml
+    interval: 86400
+    proxy: DIRECT
+
+rules:
+  # 對應 skip-proxy / bypass-system。
+  - DOMAIN,localhost,DIRECT
+  - DOMAIN-SUFFIX,local,DIRECT
+  - DOMAIN,captive.apple.com,DIRECT
+  - IP-CIDR,127.0.0.0/8,DIRECT,no-resolve
+  - IP-CIDR,192.168.0.0/16,DIRECT,no-resolve
+  - IP-CIDR,10.0.0.0/8,DIRECT,no-resolve
+  - IP-CIDR,172.16.0.0/12,DIRECT,no-resolve
+
+  # 原檔的 QUIC 封鎖未啟用，這裡同樣保留為註解。
+  # - AND,((NETWORK,UDP),(DST-PORT,443)),REJECT
+
+  # 每條 PROXY 規則後的 UDP 守衛保留原檔 udp-policy-not-supported-behaviour = REJECT。
+  # 節點支援 UDP 時會先命中 PROXY；不支援時由下一條守衛拒絕。
+
+  # ChatGPT
+  - RULE-SET,hongkong-openai,PROXY
+  - AND,((NETWORK,UDP),(RULE-SET,hongkong-openai)),REJECT
+
+  # Claude
+  - RULE-SET,hongkong-anthropic,PROXY
+  - AND,((NETWORK,UDP),(RULE-SET,hongkong-anthropic)),REJECT
+
+  # Google
+  # Google AI Studio / Gemini API
+  - DOMAIN-SUFFIX,ai.studio,PROXY
+  - AND,((NETWORK,UDP),(DOMAIN-SUFFIX,ai.studio)),REJECT
+  - DOMAIN-SUFFIX,aistudio.google.com,PROXY
+  - AND,((NETWORK,UDP),(DOMAIN-SUFFIX,aistudio.google.com)),REJECT
+  - DOMAIN-SUFFIX,generativeai.google,PROXY
+  - AND,((NETWORK,UDP),(DOMAIN-SUFFIX,generativeai.google)),REJECT
+  - DOMAIN-SUFFIX,generativelanguage.googleapis.com,PROXY
+  - AND,((NETWORK,UDP),(DOMAIN-SUFFIX,generativelanguage.googleapis.com)),REJECT
+  - DOMAIN,alkalicore-pa.clients6.google.com,PROXY
+  - AND,((NETWORK,UDP),(DOMAIN,alkalicore-pa.clients6.google.com)),REJECT
+  - DOMAIN,alkalimakersuite-pa.clients6.google.com,PROXY
+  - AND,((NETWORK,UDP),(DOMAIN,alkalimakersuite-pa.clients6.google.com)),REJECT
+  - DOMAIN,webchannel-alkalimakersuite-pa.clients6.google.com,PROXY
+  - AND,((NETWORK,UDP),(DOMAIN,webchannel-alkalimakersuite-pa.clients6.google.com)),REJECT
+  - DOMAIN-SUFFIX,aisandbox-pa.googleapis.com,PROXY
+  - AND,((NETWORK,UDP),(DOMAIN-SUFFIX,aisandbox-pa.googleapis.com)),REJECT
+  - DOMAIN-SUFFIX,makersuite.google.com,PROXY
+  - AND,((NETWORK,UDP),(DOMAIN-SUFFIX,makersuite.google.com)),REJECT
+
+  # NotebookLM
+  - DOMAIN-SUFFIX,notebooklm.google,PROXY
+  - AND,((NETWORK,UDP),(DOMAIN-SUFFIX,notebooklm.google)),REJECT
+  - DOMAIN-SUFFIX,notebooklm.google.com,PROXY
+  - AND,((NETWORK,UDP),(DOMAIN-SUFFIX,notebooklm.google.com)),REJECT
+  - DOMAIN,notebooklm-pa.googleapis.com,PROXY
+  - AND,((NETWORK,UDP),(DOMAIN,notebooklm-pa.googleapis.com)),REJECT
+  - DOMAIN,notebooklm.googleapis.com,PROXY
+  - AND,((NETWORK,UDP),(DOMAIN,notebooklm.googleapis.com)),REJECT
+  - DOMAIN-SUFFIX,notebook.google.com,PROXY
+  - AND,((NETWORK,UDP),(DOMAIN-SUFFIX,notebook.google.com)),REJECT
+
+  # Google Antigravity
+  - DOMAIN-SUFFIX,antigravity.google,PROXY
+  - AND,((NETWORK,UDP),(DOMAIN-SUFFIX,antigravity.google)),REJECT
+  - DOMAIN-SUFFIX,antigravity.google.com,PROXY
+  - AND,((NETWORK,UDP),(DOMAIN-SUFFIX,antigravity.google.com)),REJECT
+  - DOMAIN,antigravity-pa.googleapis.com,PROXY
+  - AND,((NETWORK,UDP),(DOMAIN,antigravity-pa.googleapis.com)),REJECT
+  - DOMAIN,antigravity.googleapis.com,PROXY
+  - AND,((NETWORK,UDP),(DOMAIN,antigravity.googleapis.com)),REJECT
+  - DOMAIN-SUFFIX,antigravity-unleash.goog,PROXY
+  - AND,((NETWORK,UDP),(DOMAIN-SUFFIX,antigravity-unleash.goog)),REJECT
+
+  # Google Labs
+  - DOMAIN-SUFFIX,labs.google,PROXY
+  - AND,((NETWORK,UDP),(DOMAIN-SUFFIX,labs.google)),REJECT
+  - DOMAIN-SUFFIX,labs.google.com,PROXY
+  - AND,((NETWORK,UDP),(DOMAIN-SUFFIX,labs.google.com)),REJECT
+
+  # Network
+  - DOMAIN-SUFFIX,speedtest.net,PROXY
+  - AND,((NETWORK,UDP),(DOMAIN-SUFFIX,speedtest.net)),REJECT
+  - DOMAIN-SUFFIX,ptclspeed.speedtestcustom.com,PROXY
+  - AND,((NETWORK,UDP),(DOMAIN-SUFFIX,ptclspeed.speedtestcustom.com)),REJECT
+  - DOMAIN-SUFFIX,speed.cloudflare.com,PROXY
+  - AND,((NETWORK,UDP),(DOMAIN-SUFFIX,speed.cloudflare.com)),REJECT
+  - DOMAIN-SUFFIX,scamalytics.com,PROXY
+  - AND,((NETWORK,UDP),(DOMAIN-SUFFIX,scamalytics.com)),REJECT
+  - DOMAIN-SUFFIX,ip2location.com,PROXY
+  - AND,((NETWORK,UDP),(DOMAIN-SUFFIX,ip2location.com)),REJECT
+
+  # Final
+  - MATCH,DIRECT
+
