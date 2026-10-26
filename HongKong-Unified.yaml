@@ -1,0 +1,68 @@
+# HongKong-Unified — CMFA / Clash Verge Rev / Mihomo 通用配置範本
+# 先下載到本地，把下面唯一的 REPLACE_WITH_YOUR_CLASH_SUBSCRIPTION_URL 換成私人訂閱網址。
+# 這是完整配置範本，沒有內置節點；不能未填訂閱網址就直接使用。
+# 在兩邊都可作為完整配置匯入；不貼進 Global Extend Config。
+# CMFA 的 VPN 由 App 控制；Clash Verge Rev 的模式／連接埠以 App 設定為準。
+mixed-port: 7897
+allow-lan: false
+mode: rule
+log-level: info
+ipv6: false
+
+dns:
+  enable: true
+  ipv6: false
+  enhanced-mode: fake-ip
+  nameserver:
+    - "https://1.1.1.1/dns-query"
+    - "https://8.8.8.8/dns-query"
+
+proxy-providers:
+  subscription:
+    type: http
+    url: "https://example.invalid/REPLACE_WITH_YOUR_CLASH_SUBSCRIPTION_URL"
+    path: "./proxy-providers/hongkong-unified-subscription.yaml"
+    interval: 86400
+    proxy: DIRECT
+    health-check:
+      enable: true
+      url: "https://www.gstatic.com/generate_204"
+      interval: 600
+
+proxy-groups:
+  - name: PROXY
+    type: select
+    include-all: true
+    empty-fallback: REJECT
+
+rule-providers:
+  hongkong-unified-openai:
+    type: "http"
+    behavior: "classical"
+    format: "yaml"
+    url: "https://raw.githubusercontent.com/VPSDance/ai-proxy-rules/refs/heads/main/rules/clash/openai.yaml"
+    path: "./ruleset/hongkong-unified-openai.yaml"
+    interval: 86400
+    proxy: "PROXY"
+  hongkong-unified-anthropic:
+    type: "http"
+    behavior: "classical"
+    format: "yaml"
+    url: "https://raw.githubusercontent.com/VPSDance/ai-proxy-rules/refs/heads/main/rules/clash/anthropic.yaml"
+    path: "./ruleset/hongkong-unified-anthropic.yaml"
+    interval: 86400
+    proxy: "PROXY"
+  hongkong-unified-google-test:
+    type: "http"
+    behavior: "classical"
+    format: "yaml"
+    url: "https://raw.githubusercontent.com/EricHe03/Rules/main/HongKong-Unified-rules.yaml"
+    path: "./ruleset/hongkong-unified-google-test.yaml"
+    interval: 86400
+    proxy: "PROXY"
+
+rules:
+  - "RULE-SET,hongkong-unified-openai,PROXY"
+  - "RULE-SET,hongkong-unified-anthropic,PROXY"
+  - "RULE-SET,hongkong-unified-google-test,PROXY"
+  - "MATCH,DIRECT"
