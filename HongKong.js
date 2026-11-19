@@ -26,21 +26,17 @@ function main(config, profileName) {
   const myRules = [
     "RULE-SET,custom-ai-openai",
     "RULE-SET,custom-ai-anthropic",
+    "DOMAIN-SUFFIX,googleapis.com",
     "DOMAIN-SUFFIX,ai.studio",
     "DOMAIN-SUFFIX,aistudio.google.com",
     "DOMAIN-SUFFIX,makersuite.google.com",
-    "DOMAIN-SUFFIX,generativelanguage.googleapis.com",
-    "DOMAIN-SUFFIX,aisandbox-pa.googleapis.com",
     "DOMAIN-SUFFIX,antigravity.google",
     "DOMAIN-SUFFIX,antigravity.google.com",
     "DOMAIN-SUFFIX,antigravity-unleash.goog",
-    "DOMAIN-SUFFIX,aicode.googleapis.com",
-    "DOMAIN-SUFFIX,aida.googleapis.com",
     "DOMAIN-SUFFIX,notebooklm.google",
     "DOMAIN-SUFFIX,notebooklm.google.com",
     "DOMAIN-SUFFIX,notebook.google",
     "DOMAIN-SUFFIX,notebook.google.com",
-    "DOMAIN-SUFFIX,labstailwind.pa.googleapis.com",
     "DOMAIN-SUFFIX,labs.google",
     "DOMAIN-SUFFIX,opal.google",
     "DOMAIN-SUFFIX,opal.google.com",
@@ -51,13 +47,6 @@ function main(config, profileName) {
     "DOMAIN,alkalicore-pa.clients6.google.com",
     "DOMAIN,alkalimakersuite-pa.clients6.google.com",
     "DOMAIN,webchannel-alkalimakersuite-pa.clients6.google.com",
-    "DOMAIN,antigravity-pa.googleapis.com",
-    "DOMAIN,antigravity.googleapis.com",
-    "DOMAIN,cloudaicompanion.googleapis.com",
-    "DOMAIN,cloudcode-pa.googleapis.com",
-    "DOMAIN,daily-cloudcode-pa.googleapis.com",
-    "DOMAIN,notebooklm-pa.googleapis.com",
-    "DOMAIN,notebooklm.googleapis.com"
 ].map(rule => rule + "," + target);
   config.rules = [...myRules, "MATCH,DIRECT"];
   return config;

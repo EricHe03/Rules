@@ -1,6 +1,6 @@
 # HongKong-Unified
 
-這是新增的統一版本；原有 `HongKong.js` 和 `HongKong.conf` 保留。現有電腦設定不會因 GitHub 更新自動改變。
+這是 Clash Verge Rev 和 CMFA 共用的分流配置。也可使用原有的 `HongKong.js` 或 Shadowrocket 的 `HongKong.conf`。
 
 兩邊統一使用 **PROXY** 代理組，以及同一套分流規則：命中清單走代理，其餘 `MATCH,DIRECT`。這裏的 PROXY 是代理組名稱，請在組內選擇可用節點。
 
@@ -10,9 +10,11 @@
 | --- | --- |
 | [HongKong-Unified.js](HongKong-Unified.js) | Clash Verge Rev 全局擴展腳本；沿用已匯入訂閱的節點及 DNS |
 | [HongKong-Unified.yaml](HongKong-Unified.yaml) | CMFA、Clash Verge Rev 都可匯入的完整配置範本；必須先在本地填訂閱網址 |
-| [HongKong-Unified-rules.yaml](HongKong-Unified-rules.yaml) | 兩個版本共同引用的 Google AI／測試網站規則集；不單獨匯入為訂閱 |
+| [HongKong-Unified-rules.yaml](HongKong-Unified-rules.yaml) | 兩個版本共同引用的 Google API、Google AI 與測試網站規則集；不單獨匯入為訂閱 |
 
-OpenAI 與 Claude 使用 VPSDance 的遠端規則集；Google AI／測試網站使用本倉庫的共用規則集。三個規則集每 86400 秒更新。遠端規則集本身的涵蓋範圍以其維護者內容為準。
+OpenAI 與 Claude 使用 VPSDance 的遠端規則集；Google API、Google AI 與測試網站使用本倉庫的共用規則集。三個規則集每 86400 秒更新。遠端規則集本身的涵蓋範圍以其維護者內容為準。
+
+`googleapis.com` 及其所有子網域都走代理，涵蓋 Gemini API、Vertex AI，以及 Google Drive 等其他 Google API。
 
 ## Clash Verge Rev：沿用現有節點訂閱
 
@@ -41,7 +43,8 @@ Clash Verge Rev 也可以把這個本地改好的 YAML 作為完整配置匯入�
 
 ## 更新
 
-- OpenAI、Claude、Google AI／測試網站的規則集：由核心定期更新，通常不需重新貼腳本。
-- JavaScript 的組別／流程設定有改動：需重新複製到 Clash Verge Rev；GitHub 更新不會自動替換全局腳本。
+- OpenAI、Claude、Google API、Google AI 與測試網站的規則集：由核心定期更新，通常不需重新貼腳本。
+- JavaScript 的組別或流程有改動時，需重新複製到 Clash Verge Rev。使用舊版 `HongKong.js` 的話，內置規則有改動時也需重新複製。
+- Shadowrocket 的 `HongKong.conf` 包含內置規則，有改動時需在 App 更新該配置。
 - YAML 的組別／DNS 等設定有改動：重新下載範本，保留自己的私人訂閱網址，再匯入本地配置。
 - 此倉庫的 YAML 是無憑證範本，不能把它的公開網址當成已填好節點的私人訂閱。
