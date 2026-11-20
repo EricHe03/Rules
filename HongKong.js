@@ -26,28 +26,35 @@ function main(config, profileName) {
   const myRules = [
     "RULE-SET,custom-ai-openai",
     "RULE-SET,custom-ai-anthropic",
-    "DOMAIN-SUFFIX,googleapis.com",
+    // Gemini API
+    "DOMAIN,generativelanguage.googleapis.com",
+    // Google AI Studio
     "DOMAIN-SUFFIX,ai.studio",
     "DOMAIN-SUFFIX,aistudio.google.com",
     "DOMAIN-SUFFIX,makersuite.google.com",
+    "DOMAIN,alkalicore-pa.clients6.google.com",
+    "DOMAIN,alkalimakersuite-pa.clients6.google.com",
+    "DOMAIN,webchannel-alkalimakersuite-pa.clients6.google.com",
+    // Google Antigravity
     "DOMAIN-SUFFIX,antigravity.google",
     "DOMAIN-SUFFIX,antigravity.google.com",
     "DOMAIN-SUFFIX,antigravity-unleash.goog",
+    "DOMAIN,antigravity-pa.googleapis.com",
+    "DOMAIN,antigravity.googleapis.com",
+    "DOMAIN,aicode.googleapis.com",
+    "DOMAIN,cloudaicompanion.googleapis.com",
+    "DOMAIN,cloudcode-pa.googleapis.com",
+    "DOMAIN,daily-cloudcode-pa.googleapis.com",
+    // Gemini Notebook (NotebookLM)
     "DOMAIN-SUFFIX,notebooklm.google",
     "DOMAIN-SUFFIX,notebooklm.google.com",
     "DOMAIN-SUFFIX,notebook.google",
     "DOMAIN-SUFFIX,notebook.google.com",
-    "DOMAIN-SUFFIX,labs.google",
-    "DOMAIN-SUFFIX,opal.google",
-    "DOMAIN-SUFFIX,opal.google.com",
-    "DOMAIN-SUFFIX,speedtest.net",
-    "DOMAIN-SUFFIX,speed.cloudflare.com",
-    "DOMAIN-SUFFIX,scamalytics.com",
-    "DOMAIN-SUFFIX,ip2location.com",
-    "DOMAIN,alkalicore-pa.clients6.google.com",
-    "DOMAIN,alkalimakersuite-pa.clients6.google.com",
-    "DOMAIN,webchannel-alkalimakersuite-pa.clients6.google.com",
+    "DOMAIN,notebooklm-pa.googleapis.com",
+    "DOMAIN,notebooklm.googleapis.com",
+    "DOMAIN,labstailwind.pa.googleapis.com",
 ].map(rule => rule + "," + target);
-  config.rules = [...myRules, "MATCH,DIRECT"];
+  // Match Google Cloud Storage before the upstream rulesets.
+  config.rules = ["DOMAIN,storage.googleapis.com,DIRECT", ...myRules, "MATCH,DIRECT"];
   return config;
 }

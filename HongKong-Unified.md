@@ -10,11 +10,13 @@
 | --- | --- |
 | [HongKong-Unified.js](HongKong-Unified.js) | Clash Verge Rev 全局擴展腳本；沿用已匯入訂閱的節點及 DNS |
 | [HongKong-Unified.yaml](HongKong-Unified.yaml) | CMFA、Clash Verge Rev 都可匯入的完整配置範本；必須先在本地填訂閱網址 |
-| [HongKong-Unified-rules.yaml](HongKong-Unified-rules.yaml) | 兩個版本共同引用的 Google API、Google AI 與測試網站規則集；不單獨匯入為訂閱 |
+| [HongKong-Unified-rules.yaml](HongKong-Unified-rules.yaml) | 兩個版本共同引用的 Gemini API 與未列入香港支援名單的 Google AI 工具規則集；不單獨匯入為訂閱 |
 
-OpenAI 與 Claude 使用 VPSDance 的遠端規則集；Google API、Google AI 與測試網站使用本倉庫的共用規則集。三個規則集每 86400 秒更新。遠端規則集本身的涵蓋範圍以其維護者內容為準。
+OpenAI 與 Claude 使用 VPSDance 的遠端規則集；Gemini API 與未列入香港支援名單的 Google AI 工具使用本倉庫的共用規則集。三個規則集每 86400 秒更新。遠端規則集本身的涵蓋範圍以其維護者內容為準。
 
-`googleapis.com` 及其所有子網域都走代理，涵蓋 Gemini API、Vertex AI，以及 Google Drive 等其他 Google API。
+- Gemini Developer API 的 `generativelanguage.googleapis.com` 走代理，包括 OpenAI 相容介面。同樣走代理的還有 Google AI Studio、Antigravity 及 Gemini Notebook（前稱 NotebookLM）的相關網域。
+- Gemini 網頁版、Google Flow、其他一般 Google API 及測速網站使用直連。Google Cloud Storage 的 `storage.googleapis.com` 有優先直連規則，避免被上游 Claude 清單送去代理。
+- 其餘未命中規則的流量使用 `MATCH,DIRECT`（Shadowrocket 為 `FINAL,DIRECT`）。
 
 ## Clash Verge Rev：沿用現有節點訂閱
 
@@ -43,7 +45,9 @@ Clash Verge Rev 也可以把這個本地改好的 YAML 作為完整配置匯入�
 
 ## 更新
 
-- OpenAI、Claude、Google API、Google AI 與測試網站的規則集：由核心定期更新，通常不需重新貼腳本。
+要套用 Google Cloud Storage 的優先直連規則，請更新已匯入的 Unified YAML 或重新複製 Unified 腳本。之後共用規則集的更新仍由核心定期下載。
+
+- OpenAI、Claude、Gemini API 與未列入香港支援名單的 Google AI 工具的規則集：由核心定期更新，通常不需重新貼腳本。
 - JavaScript 的組別或流程有改動時，需重新複製到 Clash Verge Rev。使用舊版 `HongKong.js` 的話，內置規則有改動時也需重新複製。
 - Shadowrocket 的 `HongKong.conf` 包含內置規則，有改動時需在 App 更新該配置。
 - YAML 的組別／DNS 等設定有改動：重新下載範本，保留自己的私人訂閱網址，再匯入本地配置。

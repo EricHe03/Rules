@@ -47,6 +47,8 @@ function main(config) {
 }
   };
   config.rules = [
+  // Match Google Cloud Storage before the upstream rulesets.
+  "DOMAIN,storage.googleapis.com,DIRECT",
   "RULE-SET,hongkong-unified-openai,PROXY",
   "RULE-SET,hongkong-unified-anthropic,PROXY",
   "RULE-SET,hongkong-unified-google-test,PROXY",
