@@ -1,7 +1,5 @@
 # 香港 AI 分流
 
-Apple Intelligence 的 ChatGPT、ChatGPT、Claude、Gemini API、Google AI Studio、Antigravity 和 Gemini Notebook 走代理。普通 Gemini 網頁版、Google Cloud Storage 和其餘流量直連。
-
 | 客戶端 | 配置 |
 | --- | --- |
 | Clash Meta for Android、Clash Verge Rev、iOS 版 Clash | [HongKong.yaml](https://raw.githubusercontent.com/EricHe03/Rules/main/HongKong.yaml) |
