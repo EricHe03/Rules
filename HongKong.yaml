@@ -51,7 +51,6 @@ rules:
   - "DOMAIN-SUFFIX,oaistatic.com,PROXY"
   - "DOMAIN-SUFFIX,oaiusercontent.com,PROXY"
   - "DOMAIN-SUFFIX,oaistatsig.com,PROXY"
-  - "DOMAIN-SUFFIX,sora.com,PROXY"
   - "DOMAIN-SUFFIX,chatgpt.livekit.cloud,PROXY"
   - "DOMAIN,chat.com,PROXY"
   - "DOMAIN,cdn.openaimerge.com,PROXY"
