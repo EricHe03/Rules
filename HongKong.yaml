@@ -129,5 +129,7 @@ rules:
 
   # ChatGPT Voice media IPs (UDP 3478 requires a UDP-capable node)
   - "RULE-SET,chatgpt-voice,PROXY"
+  # Prevent direct fallback when the selected node cannot carry voice UDP.
+  - "AND,((NETWORK,UDP),(DST-PORT,3478),(RULE-SET,chatgpt-voice)),REJECT"
 
   - "MATCH,DIRECT"
