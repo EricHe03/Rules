@@ -74,8 +74,11 @@ rules:
   - "IP-CIDR,24.199.123.28/32,PROXY,no-resolve"
   - "IP-CIDR,64.23.132.171/32,PROXY,no-resolve"
   - "IP-CIDR6,2604:f20::/32,PROXY,no-resolve"
-  - "RULE-SET,chatgpt-voice,PROXY"
+
+  # ChatGPT Voice uses UDP 3478 and falls back to TCP 443.
+  - "AND,((NETWORK,UDP),(DST-PORT,3478),(RULE-SET,chatgpt-voice)),PROXY"
   - "AND,((NETWORK,UDP),(DST-PORT,3478),(RULE-SET,chatgpt-voice)),REJECT"
+  - "AND,((NETWORK,TCP),(DST-PORT,443),(RULE-SET,chatgpt-voice)),PROXY"
 
   # Claude
   - "DOMAIN-SUFFIX,anthropic.com,PROXY"
