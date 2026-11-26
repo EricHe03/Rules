@@ -40,6 +40,15 @@ proxy-groups:
       - subscription
     empty-fallback: REJECT
 
+rule-providers:
+  chatgpt-voice:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/KevinChen222/rule-/main/chatgpt-voice/ChatGPTVoice.list
+    path: ./ruleset/chatgpt-voice.list
+    interval: 86400
+
 rules:
   # Apple Intelligence
   - "DOMAIN,apple-relay.apple.com,PROXY"
@@ -117,5 +126,8 @@ rules:
   - "DOMAIN,notebooklm-pa.googleapis.com,PROXY"
   - "DOMAIN,notebooklm.googleapis.com,PROXY"
   - "DOMAIN,labstailwind.pa.googleapis.com,PROXY"
+
+  # ChatGPT Voice media IPs (UDP 3478 requires a UDP-capable node)
+  - "RULE-SET,chatgpt-voice,PROXY"
 
   - "MATCH,DIRECT"
