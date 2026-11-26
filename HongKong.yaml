@@ -76,6 +76,7 @@ rules:
   - "IP-CIDR,64.23.132.171/32,PROXY,no-resolve"
   - "IP-CIDR6,2604:f20::/32,PROXY,no-resolve"
   - "RULE-SET,chatgpt-voice,PROXY"
+  - "AND,((NETWORK,UDP),(DST-PORT,3478),(RULE-SET,chatgpt-voice)),REJECT"
 
   # Claude
   - "DOMAIN-SUFFIX,anthropic.com,PROXY"
