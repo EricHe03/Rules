@@ -75,6 +75,7 @@ rules:
   - "IP-CIDR,24.199.123.28/32,PROXY,no-resolve"
   - "IP-CIDR,64.23.132.171/32,PROXY,no-resolve"
   - "IP-CIDR6,2604:f20::/32,PROXY,no-resolve"
+  - "RULE-SET,chatgpt-voice,PROXY"
 
   # Claude
   - "DOMAIN-SUFFIX,anthropic.com,PROXY"
@@ -127,7 +128,5 @@ rules:
   - "DOMAIN,notebooklm.googleapis.com,PROXY"
   - "DOMAIN,labstailwind.pa.googleapis.com,PROXY"
 
-  # ChatGPT Voice media IPs (UDP 3478 requires a UDP-capable node)
-  - "RULE-SET,chatgpt-voice,PROXY"
-
+  # Final
   - "MATCH,DIRECT"
